@@ -6,6 +6,10 @@ const app = express()
 app.use(cors())
 app.use(express.urlencoded({extended:true}))
 
+const testroutes = require('./routes/testroute')
+
+
+app.use('/api/v1',testroutes)
 
 app.get('/', (req,res) => {
     res.send('welcome to villaja backend')
