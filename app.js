@@ -1,22 +1,43 @@
-
-const cors = require('cors')
+const path = require('path')
+const dotenv = require('dotenv').config()
 const express = require('express')
+const connectDB = require('./config/database');
+const {errorHandler} = require('./middlewares/errorMiddleware')
+const helmet = require("helmet");
+const cors = require('cors')
+
+connectDB()
+
+const port = process.env.PORT || 4090
 const app = express()
 
-app.use(cors())
-app.use(express.urlencoded({extended:true}))
+const whiteList = ["http://localhost:3000", "http://localhost:3000","http://localhost:3001", "https://testt-orpin.vercel.app"];
+const corsOption = {
+  origin: whiteList,
+  credentials: true,
+};
+app.use(helmet());
+app.use(cors(corsOption));
+app.use(express.json())
+app.use(express.urlencoded({extended: false}))
 
-const testroutes = require('./routes/testroute')
+
+// routes
+app.use('/api/users', require('./routes/userRoute'))
 
 
-app.use('/api/v1',testroutes)
+const dirname = path.resolve()
+app.use('/uploads', express.static(path.join(__dirname, '/uploads')))
 
-app.get('/', (req,res) => {
-    res.send('welcome to villaja backend')
+app.use('/uploads', express.static(path.join(dirname, '/uploads')))
+
+
+app.get('/', (req, res) => {
+    res.send('Villaja API V1 is running....')
 })
 
-const PORT  = process.env.PORT || 4090
 
-app.listen(PORT, () => {
-    console.log(`server is listening on port ${PORT}`);
-})
+app.use(errorHandler)
+
+
+app.listen(port, () => console.log(`Server Started on port ${port}`))
