@@ -3,12 +3,22 @@ const bcrypt = require('bcryptjs');
 const asyncHandler = require('express-async-handler');
 const User = require('../models/userModel');
 
+const {validateRegistration,validateLogin, validateUpdate} = require('../validation/userValidation')
+
 // Register user
 const registerUser = asyncHandler(async (req, res) => {
   const { email, firstname, lastname, phoneNumber, password } = req.body;
   if (!email || !password) {
     res.status(400);
     throw new Error('Please add all fields');
+  }
+
+  //validate user Registration data
+  let validation = validateRegistration(req.body);
+  if (validation.error) {
+    res.status(400)
+    throw new Error(validation.error.details[0].message)
+  
   }
 
   // Check if user exists
@@ -46,6 +56,14 @@ const registerUser = asyncHandler(async (req, res) => {
 const loginUser = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
 
+  //validate user Login data
+  let validation = validateLogin(req.body);
+  if (validation.error) {
+    res.status(400)
+    throw new Error(validation.error.details[0].message)
+  
+  }
+
   // Check for user email
   const user = await User.findOne({ email });
 
@@ -70,6 +88,14 @@ const loginUser = asyncHandler(async (req, res) => {
 const updateUser = asyncHandler(async (req, res) => {
   const { firstname, lastname, phoneNumber} = req.body;
   const userId = req.user._id;
+
+  //validate user update data
+  let validation = validateUpdate(req.body);
+  if (validation.error) {
+    res.status(400)
+    throw new Error(validation.error.details[0].message)
+  
+  }
 
   try {
     const user = await User.findById(userId);
