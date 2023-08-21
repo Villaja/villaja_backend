@@ -59,7 +59,14 @@ router.post("/create-shop", catchAsyncErrors(async (req, res, next) => {
       phoneNumber: seller.phoneNumber,
     });
 
+
     sendShopToken(newSeller, 201, res);
+    sendMail({
+       email,
+       subject:"Villaja Shop Successfully Created",
+       message:"Villaja Shop has been created successfully",
+       html:`<h2>Hello ${seller.name},</h2> <p>Thank you for joining villaja your Shop has been created successfully.</p> <p>Thanks, </br></br> Villaja Team</p>`
+    }) 
   } catch (error) {
     console.error("Error during shop creation:", error); 
     return res.status(500).json({ error: error.message }); 
@@ -93,6 +100,12 @@ router.post(
       }
 
       sendShopToken(user, 201, res);
+      sendMail({
+       email,
+       subject:`Successful sign-in for ${email}`,
+       message:`We're verifying a recent sign-in for ${email}`,
+       html:`<h3>Hello ${user.name},</h3> <p>We're verifying a recent sign-in for ${email}</p> <p>Timestamp: ${new Date().toLocaleString()}</p> <p>If you believe that this sign-in is suspicious, please reset your password immediately.</p> <p>Thanks, </br></br> Villaja Team</p>`
+    })
     } catch (error) {
       return next(new ErrorHandler(error.message, 500));
     }
@@ -215,6 +228,12 @@ router.put(
 
       await shop.save();
 
+      sendMail({
+       email:shop.email,
+       subject:`Seller Information Updated for ${shop.email}`,
+       message:`We're verifying a recent seller information update for ${shop.email}`,
+       html:`<h3>Hello ${shop.firstname},</h3> <p>We're verifying a recent seller information update for ${shop.email}</p> <p>Timestamp: ${new Date().toLocaleString()}</p> <p>If you believe that this action is suspicious, please reset your password immediately.</p> <p>Thanks, </br></br> Villaja Team</p>`
+    })
       res.status(201).json({
         success: true,
         shop,

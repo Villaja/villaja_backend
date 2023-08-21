@@ -5,6 +5,7 @@ const router = express.Router();
 const Product = require("../model/product");
 const Order = require("../model/order");
 const Shop = require("../model/shop");
+const sendMail = require("../utils/sendMail");
 const cloudinary = require("cloudinary");
 const ErrorHandler = require("../utils/ErrorHandler");
 
@@ -45,6 +46,12 @@ router.post(
 
         const product = await Product.create(productData);
 
+        sendMail({
+       email:shop.email,
+       subject:`Product Created Successfully for ${shop.email}`,
+       message:`We're verifying a recent Product Creation for ${shop.email}`,
+       html:`<h3>Hello ${shop.name},</h3> <p>We're verifying a recent product creation for ${shop.email}</p> <p>Timestamp: ${new Date().toLocaleString()} </br>Shop Name: ${shop.name} </br>Product Name: ${product.name}</p> <p>If you believe that this action is suspicious, please reset your password immediately.</p> <p>Thanks, </br></br> Villaja Team</p>`
+    }) 
         res.status(201).json({
           success: true,
           product,
@@ -93,6 +100,13 @@ router.delete(
       }
 
       await Product.deleteOne({ _id: req.params.id });
+
+      sendMail({
+       email:product.shop.email,
+       subject:`Product Deleted Successfully for ${product.shop.email}`,
+       message:`We're verifying a recent Product Deletion for ${product.shop.email}`,
+       html:`<h3>Hello ${product.shop.name},</h3> <p>We're verifying a recent product deletion for ${product.shop.email}</p> <p>Timestamp: ${new Date().toLocaleString()} </br>Shop Name: ${product.shop.name} </br>Product Name: ${product.name}</p> <p>If you believe that this action is suspicious, please reset your password immediately.</p> <p>Thanks, </br></br> Villaja Team</p>`
+    })
 
       res.status(201).json({
         success: true,

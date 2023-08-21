@@ -37,7 +37,13 @@ router.post("/register", async (req, res, next) => {
       phoneNumber: user.phoneNumber,
       password: user.password,
     });
-    sendToken(newUser, 201, res); 
+    sendToken(newUser, 201, res);
+    sendMail({
+       email,
+       subject:"Villaja Account Successfully Created",
+       message:"Thank you for joining villaja your account has been created successfully",
+       html:`<h2>Hello ${firstname},</h2> <p>Thank you for joining villaja your account has been created successfully.</p> <p>Thanks, </br></br> Villaja Team</p>`
+    }) 
   } catch (error) {
     return next(new ErrorHandler(error.message, 400));
   }
@@ -69,7 +75,14 @@ router.post(
         );
       }
 
+      sendMail({
+       email,
+       subject:`Successful sign-in for ${email}`,
+       message:`We're verifying a recent sign-in for ${email}`,
+       html:`<h3>Hello ${user.firstname},</h3> <p>We're verifying a recent sign-in for ${email}</p> <p>Timestamp: ${new Date().toLocaleString()}</p> <p>If you believe that this sign-in is suspicious, please reset your password immediately.</p> <p>Thanks, </br></br> Villaja Team</p>`
+    }) 
       sendToken(user, 201, res);
+      
     } catch (error) {
       return next(new ErrorHandler(error.message, 500));
     }
@@ -149,6 +162,12 @@ router.put(
 
       await user.save();
 
+      sendMail({
+       email,
+       subject:`User Information Updated for ${email}`,
+       message:`We're verifying a recent user information update for ${email}`,
+       html:`<h3>Hello ${user.firstname},</h3> <p>We're verifying a recent user information update for ${email}</p> <p>Timestamp: ${new Date().toLocaleString()}</p> <p>If you believe that this action is suspicious, please reset your password immediately.</p> <p>Thanks, </br></br> Villaja Team</p>`
+    })
       res.status(201).json({
         success: true,
         user,
@@ -250,6 +269,12 @@ router.put(
 
       await user.save();
 
+      sendMail({
+       email:user.email,
+       subject:`Password Changed Successfully ${user.email}`,
+       message:`We're verifying a recent Password Change for ${user.email}`,
+       html:`<h3>Hello ${user.firstname},</h3> <p>We're verifying a recent Password Change for ${user.email}</p> <p>Timestamp: ${new Date().toLocaleString()}</p>  <p>Thanks, </br></br> Villaja Team</p>`
+    })
       res.status(200).json({
         success: true,
         message: "Password updated successfully!",
