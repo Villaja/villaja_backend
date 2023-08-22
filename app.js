@@ -29,6 +29,9 @@ if (process.env.NODE_ENV !== "PRODUCTION") {
 const user = require("./controller/user");
 const shop = require("./controller/shop");
 const product = require("./controller/product");
+const payment = require("./controller/payment");
+const order = require("./controller/order");
+
 
 
 
@@ -36,6 +39,9 @@ const product = require("./controller/product");
 app.use("/api/user", user);
 app.use("/api/shop", shop);
 app.use("/api/product", product);
+app.use("/api/order", order);
+app.use("/api/payment", payment);
+
 
 
 // it's for ErrorHandling
