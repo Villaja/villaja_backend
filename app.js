@@ -1,43 +1,50 @@
-const path = require('path')
-const dotenv = require('dotenv').config()
-const express = require('express')
-const connectDB = require('./config/database');
-const {errorHandler} = require('./middlewares/errorMiddleware')
-const helmet = require("helmet");
-const cors = require('cors')
+const express = require("express");
+const ErrorHandler = require("./middleware/error");
+const app = express();
+const cookieParser = require("cookie-parser");
+const bodyParser = require("body-parser");
+const cors = require("cors");
 
-connectDB()
+app.use(cors({
+  origin: ['http://localhost:3000'],
+  credentials: true
+}));
 
-const port = process.env.PORT || 4090
-const app = express()
+app.use(express.json());
+app.use(cookieParser());
+app.use("/test", (req, res) => {
+  res.send("Welcome to villaja's backend server");
+});
 
-const whiteList = ["http://localhost:3000", "http://localhost:3000","http://localhost:3001", "https://testt-orpin.vercel.app"];
-const corsOption = {
-  origin: whiteList,
-  credentials: true,
-};
-app.use(helmet());
-app.use(cors(corsOption));
-app.use(express.json())
-app.use(express.urlencoded({extended: false}))
+app.use(bodyParser.urlencoded({ extended: true, limit: "50mb" }));
 
+// config
+if (process.env.NODE_ENV !== "PRODUCTION") {
+  require("dotenv").config({
+    path: "config/.env",
+  });
+}
 
-// routes
-app.use('/api/users', require('./routes/userRoute'))
-
-
-const dirname = path.resolve()
-app.use('/uploads', express.static(path.join(__dirname, '/uploads')))
-
-app.use('/uploads', express.static(path.join(dirname, '/uploads')))
-
-
-app.get('/', (req, res) => {
-    res.send('Villaja API V1 is running....')
-})
+// import routes
+const user = require("./controller/user");
+const shop = require("./controller/shop");
+const product = require("./controller/product");
+const payment = require("./controller/payment");
+const order = require("./controller/order");
 
 
-app.use(errorHandler)
 
 
-app.listen(port, () => console.log(`Server Started on port ${port}`))
+
+app.use("/api/user", user);
+app.use("/api/shop", shop);
+app.use("/api/product", product);
+app.use("/api/order", order);
+app.use("/api/payment", payment);
+
+
+
+// it's for ErrorHandling
+app.use(ErrorHandler);
+
+module.exports = app;
