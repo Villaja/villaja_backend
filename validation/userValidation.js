@@ -11,7 +11,7 @@ const validateRegistration = (user) => {
         phoneNumber: Joi.string().required()
 
     }).unknown()
-    return schema.validate(user);
+    return schema.validate(user)
 }
 
 
@@ -23,7 +23,7 @@ const validateLogin = (user) => {
         password: Joi.string().required()
 
     }).unknown()
-    return schema.validate(user);
+    return schema.validate(user)
 }
 
 const validateUpdate = (user) => {
@@ -33,11 +33,40 @@ const validateUpdate = (user) => {
         lastname: Joi.string().required(),
         phoneNumber: Joi.string().required(),
     }).unknown()
-    return schema.validate(user);
+    return schema.validate(user)
+}
+
+const ValidateUserAddresses = (user) => {
+    const schema = Joi.object(
+        {
+            _id:Joi.string().required(),
+            country:Joi.string(),
+            city:Joi.string(),
+            address1:Joi.string(),
+            address2:Joi.string(),
+            zipCode:Joi.number(),
+            addressType:Joi.array().required()
+        }
+    ).unknown()
+
+    return schema.validate(user)
+}
+
+const ValidateUpdateUserPassword = (user) => {
+    const schema = Joi.object(
+        {
+            oldPassword:Joi.string().required(),
+            newPassword:Joi.string().required(),
+            confirmPassword:Joi.string().required()
+        }
+    ).unknown()
+    return schema.validate(user)
 }
 
 module.exports =  {
     validateRegistration,
     validateLogin,
-    validateUpdate
+    validateUpdate,
+    ValidateUserAddresses,
+    ValidateUpdateUserPassword
 }

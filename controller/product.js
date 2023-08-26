@@ -8,12 +8,16 @@ const Shop = require("../model/shop");
 const sendMail = require("../utils/sendMail");
 const cloudinary = require("cloudinary");
 const ErrorHandler = require("../utils/ErrorHandler");
+const {validateCreateProduct} = require('../validation/productValidation')
 
 // create product
 router.post(
   "/create-product",
   catchAsyncErrors(async (req, res, next) => {
     try {
+      let validation = validateCreateProduct(req.body)
+      if(validation.error) return next(new ErrorHandler(validation.error.details[0].message, 400));
+    
       const shopId = req.body.shopId;
       const shop = await Shop.findById(shopId);
       if (!shop) {

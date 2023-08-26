@@ -1,7 +1,9 @@
 const express = require("express");
 const router = express.Router();
 const catchAsyncErrors = require("../middleware/catchAsyncErrors");
-const axios = require("axios"); 
+const axios = require("axios");
+const ErrorHandler = require("../utils/ErrorHandler");
+const {validateProcessPayment} = require('../validation/paymentValidation')
 
 
 const paystackSecretKey = process.env.PAYSTACK_SECRET_KEY;
@@ -11,6 +13,11 @@ router.post(
   "/process",
   catchAsyncErrors(async (req, res, next) => {
     try {
+      
+      let validation = validateProcessPayment(req.body)
+      if(validation.error) return next(new ErrorHandler(validation.error.details[0].message, 400));
+    
+
       //payment request to Paystack
       const response = await axios.post(
         "https://api.paystack.co/transaction/initialize",
