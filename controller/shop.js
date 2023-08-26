@@ -2,6 +2,10 @@ const express = require("express");
 const path = require("path");
 const router = express.Router();
 const jwt = require("jsonwebtoken");
+const {validateCreateShop,
+    validateLoginShop,
+    validateUpdateShopAvatar,
+    validateUpdateSellerInfo,} = require('../validation/shopValidation')
 const sendMail = require("../utils/sendMail");
 const Shop = require("../model/shop");
 const { isSeller, } = require("../middleware/auth");
@@ -13,6 +17,9 @@ const sendShopToken = require("../utils/shopToken");
 // create shop
 router.post("/create-shop", catchAsyncErrors(async (req, res, next) => {
   try {
+    let validation = validateCreateShop(req.body)
+    if(validation.error) return next(new ErrorHandler(validation.error.details[0].message, 400));
+    
     const { email } = req.body;
     const sellerEmail = await Shop.findOne({ email });
 
@@ -80,6 +87,10 @@ router.post(
   catchAsyncErrors(async (req, res, next) => {
     try {
       const { email, password } = req.body;
+
+      let validation = validateLoginShop(req.body)
+      if(validation.error) return next(new ErrorHandler(validation.error.details[0].message, 400));
+    
 
       if (!email || !password) {
         return next(new ErrorHandler("Please provide the all fields!", 400));
@@ -177,6 +188,9 @@ router.put(
   isSeller,
   catchAsyncErrors(async (req, res, next) => {
     try {
+      let validation = validateUpdateShopAvatar(req.body)
+      if(validation.error) return next(new ErrorHandler(validation.error.details[0].message, 400));
+    
       let existsSeller = await Shop.findById(req.seller._id);
 
         const imageId = existsSeller.avatar.public_id;
@@ -213,6 +227,10 @@ router.put(
   catchAsyncErrors(async (req, res, next) => {
     try {
       const { name, description, address, phoneNumber, zipCode } = req.body;
+
+      let validation = validateUpdateSellerInfo(req.body)
+      if(validation.error) return next(new ErrorHandler(validation.error.details[0].message, 400));
+    
 
       const shop = await Shop.findOne(req.seller._id);
 

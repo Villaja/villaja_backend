@@ -5,6 +5,7 @@ const cloudinary = require("cloudinary");
 const ErrorHandler = require("../utils/ErrorHandler");
 const catchAsyncErrors = require("../middleware/catchAsyncErrors");
 const jwt = require("jsonwebtoken");
+const {validateRegistration,validateLogin,validateUpdate,ValidateUserAddresses,ValidateUpdateUserPassword} = require('../validation/userValidation')
 const sendMail = require("../utils/sendMail");
 const sendToken = require("../utils/jwtToken");
 const { isAuthenticated, isAdmin } = require("../middleware/auth");
@@ -14,6 +15,10 @@ const { isAuthenticated, isAdmin } = require("../middleware/auth");
 router.post("/register", async (req, res, next) => {
   try {
     const { firstname, lastname, email, phoneNumber, password} = req.body;
+
+    let validation = validateRegistration(req.body)
+    if(validation.error) return next(new ErrorHandler(validation.error.details[0].message, 400));
+
     const userEmail = await User.findOne({ email });
 
     if (userEmail) {
@@ -56,6 +61,9 @@ router.post(
   catchAsyncErrors(async (req, res, next) => {
     try {
       const { email, password } = req.body;
+
+      let validation = validateLogin(req.body)
+      if(validation.error) return next(new ErrorHandler(validation.error.details[0].message, 400));
 
       if (!email || !password) {
         return next(new ErrorHandler("Please provide the all fields!", 400));
@@ -141,6 +149,9 @@ router.put(
     try {
       const { email, password, phoneNumber, firstname, lastname } = req.body;
 
+      let validation = validateUpdate(req.body)
+      if(validation.error) return next(new ErrorHandler(validation.error.details[0].message, 400));
+
       const user = await User.findOne({ email }).select("+password");
 
       if (!user) {
@@ -185,6 +196,9 @@ router.put(
   isAuthenticated,
   catchAsyncErrors(async (req, res, next) => {
     try {
+      let validation = ValidateUserAddresses(req.body)
+      if(validation.error) return next(new ErrorHandler(validation.error.details[0].message, 400));
+
       const user = await User.findById(req.user.id);
 
       const sameTypeAddress = user.addresses.find(
@@ -250,6 +264,9 @@ router.put(
   isAuthenticated,
   catchAsyncErrors(async (req, res, next) => {
     try {
+      let validation = ValidateUpdateUserPassword(req.body)
+      if(validation.error) return next(new ErrorHandler(validation.error.details[0].message, 400));
+
       const user = await User.findById(req.user.id).select("+password");
 
       const isPasswordMatched = await user.comparePassword(

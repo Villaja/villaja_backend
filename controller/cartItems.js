@@ -2,7 +2,7 @@ const express = require("express");
 const { isAuthenticated } = require("../middleware/auth");
 const catchAsyncErrors = require("../middleware/catchAsyncErrors");
 const router = express.Router();
-const CartItem = require("../models/cartItems");
+const CartItem = require("../model/cartItems");
 
 // Create a cart item
 router.post(
