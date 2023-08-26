@@ -31,6 +31,7 @@ const shop = require("./controller/shop");
 const product = require("./controller/product");
 const payment = require("./controller/payment");
 const order = require("./controller/order");
+const cart = require('./controller/cartItems');
 
 
 
@@ -41,6 +42,7 @@ app.use("/api/shop", shop);
 app.use("/api/product", product);
 app.use("/api/order", order);
 app.use("/api/payment", payment);
+app.use("/api/cart", cart);
 
 
 
