@@ -13,7 +13,7 @@ const validateCreateProduct = (product) => {
         stock:Joi.number().required(),
         images:Joi.array(),
         shopId:Joi.string().required(),
-        shop:Joi.object().required()
+       
 
     }).unknown()
     return schema.validate(product)

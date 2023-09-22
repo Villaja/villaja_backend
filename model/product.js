@@ -68,7 +68,7 @@ const productSchema = new mongoose.Schema({
   },
   shop: {
     type: Object,
-    required: true,
+    default: {}
   },
   sold_out: {
     type: Number,
