@@ -9,17 +9,19 @@ const sendMail = require("../utils/sendMail");
 const cloudinary = require("cloudinary");
 const ErrorHandler = require("../utils/ErrorHandler");
 const {validateCreateProduct} = require('../validation/productValidation')
+const mongoose = require("mongoose");
 
 // create product
 router.post(
   "/create-product",
   catchAsyncErrors(async (req, res, next) => {
     try {
-      let validation = validateCreateProduct(req.body)
-      if(validation.error) return next(new ErrorHandler(validation.error.details[0].message, 400));
-    
+      let validation = validateCreateProduct(req.body);
+      if (validation.error) return next(new ErrorHandler(validation.error.details[0].message, 400));
+
       const shopId = req.body.shopId;
       const shop = await Shop.findById(shopId);
+
       if (!shop) {
         return next(new ErrorHandler("Shop Id is invalid!", 400));
       } else {
@@ -30,7 +32,7 @@ router.post(
             const result = await cloudinary.v2.uploader.upload(req.body.images[i], {
               folder: "products",
             });
-      
+
             imagesLinks.push({
               public_id: result.public_id,
               url: result.secure_url,
@@ -43,19 +45,22 @@ router.post(
             url: "https://res.cloudinary.com/derf8sbin/image/upload/v1692133632/avatars/r918vmwdsmdrdvdgz1na.jpg",
           });
         }
-      
+
         const productData = req.body;
         productData.images = imagesLinks;
+
+        // Assign the entire shop object to productData.shop
         productData.shop = shop;
 
         const product = await Product.create(productData);
 
         sendMail({
-       email:shop.email,
-       subject:`Product Created Successfully for ${shop.email}`,
-       message:`We're verifying a recent Product Creation for ${shop.email}`,
-       html:`<h3>Hello ${shop.name},</h3> <p>We're verifying a recent product creation for ${shop.email}</p> <p>Timestamp: ${new Date().toLocaleString()} </br>Shop Name: ${shop.name} </br>Product Name: ${product.name}</p> <p>If you believe that this action is suspicious, please reset your password immediately.</p> <p>Thanks, </br></br> Villaja Team</p>`
-    }) 
+          email: shop.email,
+          subject: `Product Created Successfully for ${shop.email}`,
+          message: `We're verifying a recent Product Creation for ${shop.email}`,
+          html: `<h3>Hello ${shop.name},</h3> <p>We're verifying a recent product creation for ${shop.email}</p> <p>Timestamp: ${new Date().toLocaleString()} </br>Shop Name: ${shop.name} </br>Product Name: ${product.name}</p> <p>If you believe that this action is suspicious, please reset your password immediately.</p> <p>Thanks, </br></br> Villaja Team</p>`
+        });
+
         res.status(201).json({
           success: true,
           product,
@@ -66,6 +71,7 @@ router.post(
     }
   })
 );
+
 
 
 // get all products of a shop
