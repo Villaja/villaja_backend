@@ -39,13 +39,13 @@ const validateUpdate = (user) => {
 const ValidateUserAddresses = (user) => {
     const schema = Joi.object(
         {
-            _id:Joi.string().required(),
+            // _id:Joi.string().required(),
             country:Joi.string(),
             city:Joi.string(),
             address1:Joi.string(),
             address2:Joi.string(),
             zipCode:Joi.number(),
-            addressType:Joi.array().required()
+            // addressType:Joi.required()
         }
     ).unknown()
 

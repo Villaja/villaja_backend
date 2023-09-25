@@ -4,7 +4,7 @@ Joi.objectId = require('joi-objectid')(Joi)
 const validateProcessPayment = (paymentInfo) => {
     const schema = Joi.object(
     {
-        amount:Joi.string().required(),
+        amount:Joi.required(),
         email:Joi.string().email().required(),
         
     }).unknown()

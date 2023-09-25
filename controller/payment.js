@@ -13,17 +13,17 @@ router.post(
   "/process",
   catchAsyncErrors(async (req, res, next) => {
     try {
-      
-      let validation = validateProcessPayment(req.body)
-      if(validation.error) return next(new ErrorHandler(validation.error.details[0].message, 400));
-    
+      let validation = validateProcessPayment(req.body);
+      if (validation.error)
+        return next(new ErrorHandler(validation.error.details[0].message, 400));
 
-      //payment request to Paystack
+      // Payment request to Paystack
       const response = await axios.post(
         "https://api.paystack.co/transaction/initialize",
         {
-          amount: req.body.amount * 100, 
-          email: req.body.email, 
+          email: req.body.email,
+          amount: req.body.amount, // Amount in kobo (100 kobo = 1 Naira)
+          reference: req.body.reference, // Use a unique reference for each order
           metadata: {
             company: "bolu's Bussiness",
           },
@@ -35,7 +35,7 @@ router.post(
         }
       );
 
-      //Paystack response to the client
+      // Paystack response to the client
       res.status(200).json({
         success: true,
         payment_link: response.data.data.authorization_url,
@@ -46,6 +46,7 @@ router.post(
     }
   })
 );
+
 
 // Route to get the Paystack API key
 router.get(
