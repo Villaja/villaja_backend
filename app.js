@@ -6,7 +6,7 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 
 app.use(cors({
-  origin: ['http://localhost:3000','https://villaja-frontend.vercel.app/'],
+  origin: '*',
   credentials: true
 }));
 
@@ -34,8 +34,6 @@ const order = require("./controller/order");
 const cart = require('./controller/cartItems');
 const recomendation = require('./controller/recomendation');
 
-
-
 app.use("/api/user", user);
 app.use("/api/shop", shop);
 app.use("/api/product", product);
@@ -43,8 +41,6 @@ app.use("/api/order", order);
 app.use("/api/payment", payment);
 app.use("/api/cart", cart);
 app.use("/api/recomendation", recomendation);
-
-
 
 // it's for ErrorHandling
 app.use(ErrorHandler);
