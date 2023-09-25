@@ -6,7 +6,7 @@ const bodyParser = require("body-parser");
 const cors = require("cors");
 
 app.use(cors({
-  origin: ['http://localhost:3000','https://villaja-frontend-lq7e-91v1ul3a6-villajamarketplace.vercel.app/'],
+  origin: ['http://localhost:3000','https://villaja-frontend.vercel.app/'],
   credentials: true
 }));
 
