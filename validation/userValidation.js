@@ -4,11 +4,10 @@ Joi.objectId = require('joi-objectid')(Joi)
 const validateRegistration = (user) => {
     const schema = Joi.object(
     {
-        firstname: Joi.string().required(),
-        lastname: Joi.string().required(),
-        email: Joi.string().email().required(),
+        firstname: Joi.string(),
+        email: Joi.string().email(),
         password: Joi.string().required(),
-        phoneNumber: Joi.string().required()
+        phoneNumber: Joi.string(),
 
     }).unknown()
     return schema.validate(user)
