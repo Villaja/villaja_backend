@@ -27,6 +27,58 @@ const productSchema = new mongoose.Schema({
     type: Number,
     required: [true, "Please enter your product stock!"],
   },
+  condition: {
+    type: String,
+  },
+  aboutProduct: {
+    type: String,
+  },
+  brand: {
+    type: String,
+  },
+  model: {
+    type: String,
+  },
+  displaySize: {
+    type: String,
+  },
+  color: {
+    type: String,
+  },
+  os: {
+    type: String,
+  },
+  memorySize: {
+    type: String,
+  },
+  cellularTechnology: {
+    type: String
+  },
+  connectivityTechnology: {
+    type: String,
+  },
+  simCard: {
+    type: String,
+  },
+  dimensions: {
+    type: String,
+  },
+  serialNumber: {
+    type: String,
+  },
+  weight: {
+    type: String,
+  },
+  inTheBox: {
+    type: String,
+  },
+  minDelivery: {
+    type: String,
+  },
+  maxDelivery: {
+    type: String,
+  },
+  
   images: [
     {
       public_id: {

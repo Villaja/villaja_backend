@@ -24,6 +24,14 @@ const shopSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  fullName: {
+    type: String,
+    required: true,
+  },
+  accountType: {
+    type: String,
+    required: true,
+  },
   phoneNumber: {
     type: Number,
     required: true,
@@ -35,11 +43,11 @@ const shopSchema = new mongoose.Schema({
   avatar: {
     public_id: {
       type: String,
-      required: true,
+      
     },
     url: {
       type: String,
-      required: true,
+      
     },
   },
   zipCode: {
