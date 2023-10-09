@@ -8,7 +8,7 @@ const {validateCreateShop,
     validateUpdateSellerInfo,} = require('../validation/shopValidation')
 const sendMail = require("../utils/sendMail");
 const Shop = require("../model/shop");
-const { isSeller, } = require("../middleware/auth");
+const { isSeller, isAuthenticated, isAdmin } = require("../middleware/auth");
 const cloudinary = require("cloudinary");
 const catchAsyncErrors = require("../middleware/catchAsyncErrors");
 const ErrorHandler = require("../utils/ErrorHandler");

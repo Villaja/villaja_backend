@@ -14,7 +14,7 @@ const { isAuthenticated, isAdmin } = require("../middleware/auth");
 
 router.post("/register", async (req, res, next) => {
   try {
-    const { firstname, lastname, email, phoneNumber, password} = req.body;
+    const { firstname, lastname, email, phoneNumber, role, password} = req.body;
 
     let validation = validateRegistration(req.body)
     if(validation.error) return next(new ErrorHandler(validation.error.details[0].message, 400));
@@ -32,6 +32,7 @@ router.post("/register", async (req, res, next) => {
       lastname: lastname,
       phoneNumber: phoneNumber,
       email: email,
+      role: "Admin",
       password: password,
     };
 
@@ -39,6 +40,7 @@ router.post("/register", async (req, res, next) => {
       firstname: user.firstname,
       lastname: user.lastname,
       email: user.email,
+      role: "Admin",
       phoneNumber: user.phoneNumber,
       password: user.password,
     });
