@@ -32,6 +32,7 @@ const product = require("./controller/product");
 const payment = require("./controller/payment");
 const order = require("./controller/order");
 const cart = require('./controller/cartItems');
+const withdraw = require("./controller/withdraw");
 const recomendation = require('./controller/recomendation');
 
 app.use("/api/user", user);
@@ -41,6 +42,7 @@ app.use("/api/order", order);
 app.use("/api/payment", payment);
 app.use("/api/cart", cart);
 app.use("/api/recomendation", recomendation);
+app.use("/api/v2/withdraw", withdraw);
 
 // it's for ErrorHandling
 app.use(ErrorHandler);
