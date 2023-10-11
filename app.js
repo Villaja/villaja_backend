@@ -42,7 +42,7 @@ app.use("/api/order", order);
 app.use("/api/payment", payment);
 app.use("/api/cart", cart);
 app.use("/api/recomendation", recomendation);
-app.use("/api/v2/withdraw", withdraw);
+app.use("/api/withdraw", withdraw);
 
 // it's for ErrorHandling
 app.use(ErrorHandler);

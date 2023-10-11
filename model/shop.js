@@ -26,15 +26,15 @@ const shopSchema = new mongoose.Schema({
   },
   fullName: {
     type: String,
-    required: true,
+    
   },
   accountType: {
     type: String,
-    required: true,
+    
   },
   phoneNumber: {
     type: Number,
-    required: true,
+    
   },
   role: {
     type: String,
