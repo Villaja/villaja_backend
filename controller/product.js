@@ -54,12 +54,12 @@ router.post(
 
         const product = await Product.create(productData);
 
-        sendMail({
-          email: shop.email,
-          subject: `Product Created Successfully for ${shop.email}`,
-          message: `We're verifying a recent Product Creation for ${shop.email}`,
-          html: `<h3>Hello ${shop.name},</h3> <p>We're verifying a recent product creation for ${shop.email}</p> <p>Timestamp: ${new Date().toLocaleString()} </br>Shop Name: ${shop.name} </br>Product Name: ${product.name}</p> <p>If you believe that this action is suspicious, please reset your password immediately.</p> <p>Thanks, </br></br> Villaja Team</p>`
-        });
+        // sendMail({
+        //   email: shop.email,
+        //   subject: `Product Created Successfully for ${shop.email}`,
+        //   message: `We're verifying a recent Product Creation for ${shop.email}`,
+        //   html: `<h3>Hello ${shop.name},</h3> <p>We're verifying a recent product creation for ${shop.email}</p> <p>Timestamp: ${new Date().toLocaleString()} </br>Shop Name: ${shop.name} </br>Product Name: ${product.name}</p> <p>If you believe that this action is suspicious, please reset your password immediately.</p> <p>Thanks, </br></br> Villaja Team</p>`
+        // });
 
         res.status(201).json({
           success: true,
@@ -67,6 +67,7 @@ router.post(
         });
       }
     } catch (error) {
+     
       return next(new ErrorHandler(error, 400));
     }
   })
@@ -90,6 +91,48 @@ router.get(
     }
   })
 );
+
+// update product
+// Update product
+router.put(
+  "/update-product/:id",
+  isSeller, // Add middleware for seller authentication if needed
+  catchAsyncErrors(async (req, res, next) => {
+    try {
+      const productId = req.params.id;
+      const productData = req.body;
+
+      // Ensure that the seller is allowed to update this product, for example, by checking if they own the shop associated with the product
+      const product = await Product.findById(productId);
+      if (!product) {
+        return next(new ErrorHandler("Product not found", 404));
+      }
+
+      // Check if the seller owns the shop associated with the product
+      if (product.shop.toString() !== req.seller.id) {
+        return next(new ErrorHandler("You don't have permission to update this product", 403));
+      }
+
+      // Dynamically update product attributes based on req.body
+      for (const key in productData) {
+        if (Object.prototype.hasOwnProperty.call(productData, key)) {
+          product[key] = productData[key];
+        }
+      }
+
+      // Save the updated product
+      const updatedProduct = await product.save();
+
+      res.status(200).json({
+        success: true,
+        product: updatedProduct,
+      });
+    } catch (error) {
+      return next(new ErrorHandler(error, 400));
+    }
+  })
+);
+
 
 // delete product of a shop
 router.delete(
