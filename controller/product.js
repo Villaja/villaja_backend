@@ -195,14 +195,13 @@ router.put(
   isAuthenticated,
   catchAsyncErrors(async (req, res, next) => {
     try {
-      const {rating, heading, comment, productId, orderId } = req.body;
+      const { user, rating, comment, productId, orderId } = req.body;
 
       const product = await Product.findById(productId);
 
       const review = {
-        user:req.user,
+        user,
         rating,
-        heading,
         comment,
         productId,
       };
