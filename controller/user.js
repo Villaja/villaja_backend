@@ -85,12 +85,12 @@ router.post(
         );
       }
 
-    //   sendMail({
-    //    email,
-    //    subject:`Successful sign-in for ${email}`,
-    //    message:`We're verifying a recent sign-in for ${email}`,
-    //    html:`<h3>Hello ${user.firstname},</h3> <p>We're verifying a recent sign-in for ${email}</p> <p>Timestamp: ${new Date().toLocaleString()}</p> <p>If you believe that this sign-in is suspicious, please reset your password immediately.</p> <p>Thanks, </br></br> Villaja Team</p>`
-    // }) 
+      sendMail({
+       email,
+       subject:`Successful sign-in for ${email}`,
+       message:`We're verifying a recent sign-in for ${email}`,
+       html:`<h3>Hello ${user.firstname},</h3> <p>We're verifying a recent sign-in for ${email}</p> <p>Timestamp: ${new Date().toLocaleString()}</p> <p>If you believe that this sign-in is suspicious, please reset your password immediately.</p> <p>Thanks, </br></br> Villaja Team</p>`
+    }) 
       sendToken(user, 201, res);
       
     } catch (error) {
